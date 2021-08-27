@@ -76,3 +76,53 @@ const person2 = {
 person2.age()
 //Функционально нет разницы писать person или this
 //4:07 видео просмотр
+//Соответственно, this удобно применять, когда пишешь стандартную обработку для разных объектов, что логично
+
+//Через контекстный оператор создаем логер
+const logger = {
+    keys() {
+        console.log('Object Keys: ', Object.keys(this))
+    },
+    keysAndValues(){
+        //Если callback функция не будет стрелочной - возникнет ошибка контекста (стрелочные не создают своего контекста что бы это не значило)
+        //Если надо по какой-то причине написать через функцию, надо присвоить константе значение this и продолжать через self
+        // Или можно использовать метод .bind()  (Лучше пересмотреть видео 4:14:00 или погуглить)
+        Object.keys(this).forEach(key =>{
+            console.log(`____${key}: ${this[key]}`)
+        })
+    }
+}
+logger.keysAndValues.call(person)
+
+//Благодаря методу call() любой объект может использовать методы, принадлежащие другому объекту.
+//Пример
+const car1 = {
+    color: "Red",
+    speed: function (){
+        console.log(this.engine * 100, " реальная скорость")
+    }
+}
+const car2 = {
+    engine: 2
+}
+car1.speed.call(car2)
+car1.speed.bind(car2)
+//Вот он пример и есть
+
+//bind() используется для привзяки контекста
+let user = {
+    firstName: "Вася",
+    sayHi() {
+        alert(`Привет, ${this.firstName}!`);
+    }
+};
+let sayHi = user.sayHi.bind(user); // (*)
+sayHi(); // Привет, Вася!
+setTimeout(sayHi, 1000); // Привет, Вася!
+//В данном коде без привязки контекста потеряется инфа о юзере
+//https://learn.javascript.ru/bind
+
+
+
+
+
